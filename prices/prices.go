@@ -15,24 +15,23 @@ type TaxIncludedPriceJob struct {
 }
 
 // LoadData loads input prices from the IOManager
-func (job *TaxIncludedPriceJob) LoadData() {
+func (job *TaxIncludedPriceJob) LoadData() error {
 	// Read lines from IOManager
 	lines, err := job.IOManager.ReadLines()
 
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	// Convert strings to floats
 	prices, err := conversion.StringsToFloats(lines)
 
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	job.InputPrices = prices
+	return nil
 }
 
 // NewTaxIncludedPriceJob creates a new instance of TaxIncludedPriceJob
@@ -45,9 +44,13 @@ func NewTaxIncludedPriceJob(iom iomanager.IOManager, taxRate float64) *TaxInclud
 }
 
 // Process calculates tax included prices
-func (job *TaxIncludedPriceJob) Process() {
+func (job *TaxIncludedPriceJob) Process() error {
 	// Load input data
-	job.LoadData()
+	err := job.LoadData()
+
+	if err != nil {
+		return err
+	}
 
 	result := make(map[string]string)
 	// Calculate tax included prices for each input price
@@ -59,5 +62,5 @@ func (job *TaxIncludedPriceJob) Process() {
 	job.TaxIncludedPrices = result
 
 	// Write result to IOManager
-	job.IOManager.WriteResult(job.TaxIncludedPrices)
+	return job.IOManager.WriteResult(job.TaxIncludedPrices)
 }
