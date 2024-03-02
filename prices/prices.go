@@ -44,12 +44,12 @@ func NewTaxIncludedPriceJob(iom iomanager.IOManager, taxRate float64) *TaxInclud
 }
 
 // Process calculates tax included prices
-func (job *TaxIncludedPriceJob) Process(doneChan chan bool) {
+func (job *TaxIncludedPriceJob) Process(doneChan chan bool, errorChan chan error) {
 	// Load input data
 	err := job.LoadData()
 
 	if err != nil {
-		fmt.Println(err)
+		errorChan <- err
 		return
 	}
 
