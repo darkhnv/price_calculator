@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"time"
 )
 
 // FileManager represents a file manager
@@ -48,6 +49,8 @@ func (fm FileManager) WriteResult(data interface{}) error {
 		return errors.New("failed to create file")
 	}
 	defer file.Close()
+
+	time.Sleep(3 * time.Second)
 
 	// Create a JSON encoder
 	encoder := json.NewEncoder(file)
